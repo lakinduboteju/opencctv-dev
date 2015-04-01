@@ -19,7 +19,7 @@ using namespace analytic;
 class MockAnalytic : public api::Analytic {
 public:
 	MockAnalytic();
-	bool init(std::string sAnalyticPluginDirLocation);
+	bool init(const std::string& sAnalyticPluginDirLocation);
 	void process(analytic::ConcurrentQueue<analytic::api::Image_t>* pInputQueue, analytic::ConcurrentQueue<analytic::api::Image_t>* pOutputQueue);
 	virtual ~MockAnalytic();
 };

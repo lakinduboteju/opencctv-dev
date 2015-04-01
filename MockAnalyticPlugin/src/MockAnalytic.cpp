@@ -4,8 +4,12 @@
 MockAnalytic::MockAnalytic() : api::Analytic() {
 }
 
-bool MockAnalytic::init(std::string sAnalyticPluginDirLocation)
+bool MockAnalytic::init(const std::string& sAnalyticPluginDirLocation)
 {
+	/* access files on analytic directory */
+	// prepare file paths as below and read them from the disk.
+	std::string sFilePath = sAnalyticPluginDirLocation;
+	sFilePath.append("/").append("filename.ext");
 	// do initialization
 	return true;
 }

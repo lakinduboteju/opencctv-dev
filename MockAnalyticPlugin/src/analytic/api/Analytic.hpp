@@ -24,7 +24,7 @@ class Analytic
 {
 public:
 	Analytic(){}
-	virtual bool init(std::string sAnalyticPluginDirLocation) = 0;
+	virtual bool init(const std::string& sAnalyticPluginDirLocation) = 0;
 	virtual void process(analytic::ConcurrentQueue<analytic::api::Image_t>* pInputQueue, analytic::ConcurrentQueue<analytic::api::Image_t>* pOutputQueue) = 0;
 	virtual std::string getInputStreamNames()
 	{
@@ -35,7 +35,7 @@ public:
 	virtual ~Analytic(){}
 
 protected:
-	std::string generateInputStreamNamesXml(std::map<std::string, std::string> mInputStreamDescriptions)
+	std::string generateInputStreamNamesXml(std::map<std::string, std::string>& mInputStreamDescriptions)
 	{
 		std::string sXml = "<inputstreams>";
 		std::map<std::string, std::string>::iterator it;
