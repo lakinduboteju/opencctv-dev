@@ -1,23 +1,27 @@
 # Installing Boost Libraries
 ## Version 1.57.0
 ### Linux
-#### 1. Install dependencies of Boost
+
+#### 1. Install dependencies of boost
 ```sh
 $ sudo apt-get update
 $ sudo apt-get -y install build-essential g++ python-dev autotools-dev libicu-dev libbz2-dev libzip-dev
 ```
-#### 2. Download Boost
+
+#### 2. Download boost
 ```sh
 $ wget http://sourceforge.net/projects/boost/files/boost/1.57.0/boost_1_57_0.tar.gz
 $ tar -xvzf boost_1_57_0.tar.gz
 $ cd boost_1_57_0
 ```
+
 #### 3. Init installation
 ```sh
 $ ./bootstrap.sh --prefix=/usr/local
 $ ./b2 --show-libraries
 ```
-#### 4. Install Boost
+
+#### 4. Install boost
 For OpenCCTV, Boost's `system`, `thread`, `program_options` libraries are needed. Set the libraries that you need to build using `--with-<library_name>`.
 Build the Boost in N number of processes in parallel using `-jN` (replace N by number of CPU cores your computer has).
 ```sh
