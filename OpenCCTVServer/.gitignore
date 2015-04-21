@@ -26,3 +26,4 @@
 /Release/src/opencctv/util/serialization/gpb/*.o
 /Release/src/test/gateway/*.d
 /Release/src/test/gateway/*.o
+/Release/
