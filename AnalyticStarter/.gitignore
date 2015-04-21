@@ -18,3 +18,4 @@
 /Release/src/opencctv/util/log/*.o
 /Release/src/opencctv/util/log/colored/*.d
 /Release/src/opencctv/util/log/colored/*.o
+/Release/
