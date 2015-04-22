@@ -22,8 +22,8 @@ bool BasicFlowController::canSendImageGeneratedAt(const unsigned long long& lIma
 		lAverageTimeDifference /= ((unsigned long long)_vTimeDifferences.size());
 	}
 	unsigned long long maxTimeDifference = 0;
-//	maxTimeDifference = lAverageTimeDifference;
-	maxTimeDifference = (lAverageTimeDifference/1000)*999;
+	maxTimeDifference = lAverageTimeDifference;
+//	maxTimeDifference = (lAverageTimeDifference/1000)*999;
 	if ((lImageGeneratedTimeMs - _lLastImageGeneratedTime) < maxTimeDifference) {
 		return false;
 	}
