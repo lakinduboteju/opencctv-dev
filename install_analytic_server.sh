@@ -5,6 +5,10 @@ color_green='\033[0;32m'
 color_blue='\033[0;36m'
 color_reset='\033[0m'
 
+sudo mkdir -p ${INSTALL_PATH}
+sudo chmod -R 777 ${INSTALL_PATH}
+echo -e "${color_green}Installation directory created at $INSTALL_PATH.${color_reset}"
+
 # Installing AnalyticStarter
 echo -e "${color_green}*Building AnalyticStarter...${color_reset}"
 cd AnalyticStarter/Release/
