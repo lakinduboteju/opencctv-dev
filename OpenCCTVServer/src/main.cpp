@@ -5,8 +5,8 @@
 #include "opencctv/Exception.hpp"
 #include "analytic/AnalyticInstanceManager.hpp"
 #include "opencctv/util/log/Loggers.hpp"
-//#include "opencctv/util/flow/SimpleFlowController.hpp"
-#include "opencctv/util/flow/BasicFlowController.hpp"
+#include "opencctv/util/flow/SimpleFlowController.hpp"
+//#include "opencctv/util/flow/BasicFlowController.hpp"
 #include "opencctv/ImageMulticaster.hpp"
 #include "opencctv/ConsumerThread.hpp"
 #include "opencctv/ProducerThread.hpp"
@@ -83,8 +83,8 @@ int main()
 				}
 				if (bAIStarted) {
 					// if Analytic Instance started, construct Flow Controller for Input Analytic queue and store it on Application Model.
-//					opencctv::util::flow::FlowController* pFlowController = new opencctv::util::flow::SimpleFlowController(remoteQueueSize);
-					opencctv::util::flow::FlowController* pFlowController = new opencctv::util::flow::BasicFlowController();
+					opencctv::util::flow::FlowController* pFlowController = new opencctv::util::flow::SimpleFlowController(remoteQueueSize);
+//					opencctv::util::flow::FlowController* pFlowController = new opencctv::util::flow::BasicFlowController();
 					pModel->getFlowControllers()[analyticInstance.getAnalyticInstanceId()] = pFlowController;
 					std::stringstream ssMsg;
 					ssMsg << "Analytic Instance " << analyticInstance.getAnalyticInstanceId();
