@@ -22,3 +22,4 @@
 /Release/src/opencctv/util/serialization/*.o
 /Release/src/opencctv/util/serialization/gpb/*.d
 /Release/src/opencctv/util/serialization/gpb/*.o
+/Release/
