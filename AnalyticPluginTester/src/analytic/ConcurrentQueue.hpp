@@ -15,14 +15,15 @@ class ConcurrentQueue {
 private:
 	std::queue<T> _queue;
 	pthread_mutex_t _mutex;
-	sem_t _full, _empty;
+	sem_t _full;
+	sem_t _empty;
 	size_t _size;
 public:
 	ConcurrentQueue(size_t size) {
 		pthread_mutex_init(&_mutex, NULL);
-		sem_init(&_full, 0, 0);
-		sem_init(&_empty, 0, _size);
 		_size = size;
+		sem_init(&_full, 0, 0);
+		sem_init(&_empty, 0, size);
 	}
 
 	void push(T data) {
