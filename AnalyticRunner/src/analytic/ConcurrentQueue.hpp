@@ -4,6 +4,9 @@
 
 #include <queue>
 #include <pthread.h>
+#include <semaphore.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 namespace analytic {
 
@@ -12,30 +15,35 @@ class ConcurrentQueue {
 private:
 	std::queue<T> _queue;
 	pthread_mutex_t _mutex;
-	pthread_cond_t _cond;
+	sem_t _full, _empty;
 	size_t _size;
 public:
 	ConcurrentQueue(size_t size) {
 		pthread_mutex_init(&_mutex, NULL);
-		pthread_cond_init(&_cond, NULL);
+		sem_init(&_full, 0, 0);
+		sem_init(&_empty, 0, _size);
 		_size = size;
 	}
 
 	void push(T data) {
+		/* acquire the empty lock */
+		sem_wait(&_empty);
 		pthread_mutex_lock(&_mutex);
 		_queue.push(data);
-		pthread_cond_signal(&_cond);
 		pthread_mutex_unlock(&_mutex);
+		/* signal full */
+		sem_post(&_full);
 	}
 
 	T pop() {
+		 /* aquire the full lock */
+		sem_wait(&_full);
 		pthread_mutex_lock(&_mutex);
-		while (_queue.empty()) {
-			pthread_cond_wait(&_cond, &_mutex);
-		}
 		T ret = _queue.front();
 		_queue.pop();
 		pthread_mutex_unlock(&_mutex);
+		/* signal empty */
+		sem_post(&_empty);
 		return ret;
 	}
 
