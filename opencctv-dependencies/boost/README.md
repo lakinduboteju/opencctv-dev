@@ -22,10 +22,10 @@ $ ./b2 --show-libraries
 ```
 
 #### 4. Install boost
-For OpenCCTV, Boost's `system`, `thread`, `program_options` libraries are needed. Set the libraries that you need to build using `--with-<library_name>`.
+For OpenCCTV, Boost's `system`, `thread`, `program_options`, `filesystem` libraries are needed. Set the libraries that you need to build using `--with-<library_name>`.
 Build the Boost in N number of processes in parallel using `-jN` (replace N by number of CPU cores your computer has).
 ```sh
-$ sudo ./b2 --with-system --with-thread --with-program_options -j4 --target=shared,static install
+$ sudo ./b2 --with-system --with-thread --with-program_options --with-filesystem -j4 --target=shared,static install
 $ sudo ldconfig
 ```
 
