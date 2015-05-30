@@ -5,7 +5,6 @@
 #include "../opencctv/mq/MqUtil.hpp"
 #include "../opencctv/Exception.hpp"
 #include "xml/AnalyticMessage.hpp"
-#include "../opencctv/ApplicationModel.hpp"
 
 namespace analytic {
 
@@ -14,7 +13,8 @@ private:
 	zmq::socket_t* _pSocket;
 public:
 	AnalyticInstanceManager(const std::string& sAnalyticServerIp, const std::string& sAnalyticServerPort);
-	bool startAnalyticInstance(unsigned int iAnalyticInstanceId, const std::string& sAnalyticPluginDirLocation, const std::string& sAnalyticPluginFilename);
+	bool startAnalyticInstance(unsigned int iAnalyticInstanceId, const std::string& sAnalyticPluginDirLocation, const std::string& sAnalyticPluginFilename, std::string& sAnalyticQueueInAddress, std::string& sAnalyticQueueOutAddress);
+	bool killAllAnalyticInstances();
 	virtual ~AnalyticInstanceManager();
 };
 

@@ -16,9 +16,44 @@
 #include <boost/thread/thread.hpp> // -lboost_thread -pthread
 #include <boost/lockfree/queue.hpp>
 #include <boost/lexical_cast.hpp> // to cast values
+#include <signal.h> // to handle terminate signal
+
+// Signal handler for SIGTERM (Terminate signal)
+void terminateHandler(int signum) {
+	std::map<unsigned int, analytic::AnalyticInstanceManager*> mAnalyticInstanceManagers = opencctv::ApplicationModel::getInstance()->getAnalyticInstanceManagers();
+	std::map<unsigned int, analytic::AnalyticInstanceManager*>::iterator it;
+	for(it = mAnalyticInstanceManagers.begin(); it != mAnalyticInstanceManagers.end(); /*it increment below*/) {
+		analytic::AnalyticInstanceManager* pAnalyticInstanceManager = it->second;
+		if(pAnalyticInstanceManager->killAllAnalyticInstances())
+		{
+			if(pAnalyticInstanceManager)
+			{
+				delete pAnalyticInstanceManager;
+				pAnalyticInstanceManager = NULL;
+			}
+			mAnalyticInstanceManagers.erase(it++); //remove analytic instance manager from the model
+		}
+		else
+		{
+			++it;
+		}
+	}
+	if(!mAnalyticInstanceManagers.empty())
+	{
+		opencctv::util::log::Loggers::getDefaultLogger()->error("Failed to reset all the Analytic Servers.");
+	}
+	else
+	{
+		opencctv::util::log::Loggers::getDefaultLogger()->info("Reset all the Analytic Servers.");
+	}
+	exit(signum);
+}
 
 int main()
 {
+	// Registering signal handlers
+	signal(SIGTERM, terminateHandler); // for Terminate signal
+	// signal(SIGINT, terminateHandler); // for Ctrl + C keyboard interrupt
 	// Initializing varibles
 	test::gateway::TestStreamGateway streamGateway;
 	test::gateway::TestAnalyticInstanceStreamGateway analyticInstanceGateway;
@@ -29,7 +64,8 @@ int main()
 	boost::thread_group _resultsRouterThreadGroup;
 	size_t internalQueueSize = boost::lexical_cast<size_t>(pConfig->get(opencctv::util::PROPERTY_INTERNAL_QUEUE_SIZE));
 	size_t remoteQueueSize = boost::lexical_cast<size_t>(pConfig->get(opencctv::util::PROPERTY_REMOTE_QUEUE_SIZE));
-	analytic::AnalyticInstanceManager analyticInstanceManager(pConfig->get(opencctv::util::PROPERTY_ANALYTIC_SERVER_IP), pConfig->get(opencctv::util::PROPERTY_ANALYTIC_SERVER_PORT));
+	analytic::AnalyticInstanceManager* pAnalyticInstanceManager = new analytic::AnalyticInstanceManager(pConfig->get(opencctv::util::PROPERTY_ANALYTIC_SERVER_IP), pConfig->get(opencctv::util::PROPERTY_ANALYTIC_SERVER_PORT));
+	pModel->getAnalyticInstanceManagers()[1] = pAnalyticInstanceManager;
 	opencctv::util::log::Loggers::getDefaultLogger()->info("Initializing variables done.");
 
 	std::vector<opencctv::dto::Stream> vStreams;
@@ -68,12 +104,13 @@ int main()
 			// if the Analytic Instance has not been started yet
 			if(!pModel->containsImageInputQueueAddress(analyticInstance.getAnalyticInstanceId())) {
 				bool bAIStarted = false;
+				std::string sAnalyticQueueInAddress, sAnalyticQueueOutAddress;
 				try {
 					// start Analytic Instance, store Analytic Input, Output queue addresses into the Application Model.
-					bAIStarted = analyticInstanceManager.startAnalyticInstance(
+					bAIStarted = pAnalyticInstanceManager->startAnalyticInstance(
 							analyticInstance.getAnalyticInstanceId(),
 							analyticInstance.getAnalyticDirLocation(),
-							analyticInstance.getAnalyticFilename());
+							analyticInstance.getAnalyticFilename(), sAnalyticQueueInAddress, sAnalyticQueueOutAddress);
 				} catch (opencctv::Exception &e) {
 					std::stringstream ssErrMsg;
 					ssErrMsg << "Failed to start Analytic Instance ";
@@ -82,6 +119,9 @@ int main()
 					opencctv::util::log::Loggers::getDefaultLogger()->error(ssErrMsg.str());
 				}
 				if (bAIStarted) {
+					// store analytic input queue address and output queue address in model
+					pModel->getImageInputQueueAddresses()[analyticInstance.getAnalyticInstanceId()] = sAnalyticQueueInAddress;
+					pModel->getResultsOutputQueueAddresses()[analyticInstance.getAnalyticInstanceId()] = sAnalyticQueueOutAddress;
 					// if Analytic Instance started, construct Flow Controller for Input Analytic queue and store it on Application Model.
 					opencctv::util::flow::FlowController* pFlowController = new opencctv::util::flow::SimpleFlowController(remoteQueueSize);
 //					opencctv::util::flow::FlowController* pFlowController = new opencctv::util::flow::BasicFlowController();

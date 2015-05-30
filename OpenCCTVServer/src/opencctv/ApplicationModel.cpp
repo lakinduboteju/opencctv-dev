@@ -71,6 +71,15 @@ bool ApplicationModel::containsInternalQueue(unsigned int iStreamId)
 	return false;
 }
 
+bool ApplicationModel::containsAnalyticInstanceManager(unsigned int iAnalyticServerId)
+{
+	std::map<unsigned int, analytic::AnalyticInstanceManager*>::iterator it = _mAnalyticInstanceManagers.find(iAnalyticServerId);
+	if (it != _mAnalyticInstanceManagers.end()) {
+		return true;
+	}
+	return false;
+}
+
 std::map<unsigned int, std::string>& ApplicationModel::getImageInputQueueAddresses()
 {
 	return _mImageInputQueueAddresses;
@@ -99,6 +108,11 @@ std::map<unsigned int, PluginLoader<api::VmsConnector>*>& ApplicationModel::getV
 std::map<unsigned int, ConcurrentQueue<Image>*>& ApplicationModel::getInternalQueues()
 {
 	return _mInternalQueues;
+}
+
+std::map<unsigned int, analytic::AnalyticInstanceManager*>& ApplicationModel::getAnalyticInstanceManagers()
+{
+	return _mAnalyticInstanceManagers;
 }
 
 ApplicationModel::~ApplicationModel() {

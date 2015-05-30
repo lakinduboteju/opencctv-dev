@@ -20,6 +20,39 @@ std::string AnalyticMessage::extractAnalyticRequestOperation(const std::string& 
 	return sRet;
 }
 
+std::string AnalyticMessage::getKillAllAnalyticProcessesRequest()
+{
+	boost::property_tree::ptree pt;
+	pt.put("analyticrequest.operation", OPERATION_KILL_ALL_ANALYTICS);
+	std::ostringstream oss;
+	try {
+		write_xml(oss, pt);
+	} catch (boost::property_tree::xml_parser::xml_parser_error &e) {
+		std::string sErrMsg = "Failed to generate Kill All Analytic Processes Request. ";
+		sErrMsg.append(e.what());
+		throw opencctv::Exception(sErrMsg);
+	}
+	std::string message = oss.str();
+	return message;
+}
+
+std::string AnalyticMessage::getKillAllAnalyticProcessesReply(bool bDone)
+{
+	boost::property_tree::ptree pt;
+	pt.put("analyticreply.operation", OPERATION_KILL_ALL_ANALYTICS);
+	pt.put("analyticreply.done", bDone);
+	std::ostringstream oss;
+	try {
+		write_xml(oss, pt);
+	} catch (boost::property_tree::xml_parser::xml_parser_error &e) {
+		std::string sErrMsg = "Failed to generate Kill All Analytic Processes Reply. ";
+		sErrMsg.append(e.what());
+		throw opencctv::Exception(sErrMsg);
+	}
+	std::string message = oss.str();
+	return message;
+}
+
 std::string AnalyticMessage::getAnalyticStartRequest(unsigned int iAnalyticInstanceId, const std::string& sAnalyticPluginDirLocation, const std::string& sAnalyticPluginFilename) {
 	boost::property_tree::ptree pt;
 	pt.put("analyticrequest.operation", OPERATION_START_ANALYTIC);
@@ -43,7 +76,7 @@ std::string AnalyticMessage::getAnalyticStartReply(const std::string& sAnalyticQ
 	boost::property_tree::ptree pt;
 	pt.put("analyticreply.operation", "startanalytic");
 	pt.put("analyticreply.analyticqueueinaddress", sAnalyticQueueInAddress);
-	pt.put("analyticserverreply.analyticqueueoutaddress", sAnalyticQueueOutAddress);
+	pt.put("analyticreply.analyticqueueoutaddress", sAnalyticQueueOutAddress);
 	std::ostringstream oss;
 	try {
 		write_xml(oss, pt);
@@ -99,7 +132,7 @@ void AnalyticMessage::extractAnalyticStartReplyData(const std::string& sAnalytic
 	try {
 		read_xml(iss, pt);
 		sAnalyticQueueInAddress = pt.get<std::string>("analyticreply.analyticqueueinaddress");
-		sAnalyticQueueOutAddress = pt.get<std::string>("analyticserverreply.analyticqueueoutaddress");
+		sAnalyticQueueOutAddress = pt.get<std::string>("analyticreply.analyticqueueoutaddress");
 	} catch (boost::property_tree::xml_parser::xml_parser_error &e) {
 		std::string sErrMsg = "Failed to parse Analytic Start Reply. ";
 		sErrMsg.append(e.what());
@@ -107,6 +140,20 @@ void AnalyticMessage::extractAnalyticStartReplyData(const std::string& sAnalytic
 	}
 	boost::algorithm::trim(sAnalyticQueueInAddress);
 	boost::algorithm::trim(sAnalyticQueueOutAddress);
+}
+
+void AnalyticMessage::parseKillAllAnalyticProcessesReply(const std::string& sReply, bool& sDone)
+{
+	boost::property_tree::ptree pt;
+	std::istringstream iss(sReply);
+	try {
+		read_xml(iss, pt);
+		sDone = pt.get<bool>("analyticreply.done");
+	} catch (boost::property_tree::xml_parser::xml_parser_error &e) {
+		std::string sErrMsg = "Failed to parse Kill All Analytic Processes Reply. ";
+		sErrMsg.append(e.what());
+		throw opencctv::Exception(sErrMsg);
+	}
 }
 
 pid_t AnalyticMessage::getPid(const std::string& sPidMessage)
