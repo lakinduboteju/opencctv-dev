@@ -4,13 +4,16 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
-../src/analytic/AnalyticProcess.cpp 
+../src/analytic/AnalyticProcess.cpp \
+../src/analytic/ApplicationModel.cpp 
 
 OBJS += \
-./src/analytic/AnalyticProcess.o 
+./src/analytic/AnalyticProcess.o \
+./src/analytic/ApplicationModel.o 
 
 CPP_DEPS += \
-./src/analytic/AnalyticProcess.d 
+./src/analytic/AnalyticProcess.d \
+./src/analytic/ApplicationModel.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

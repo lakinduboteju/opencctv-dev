@@ -8,6 +8,7 @@
 #include <string>
 #include <sstream>
 #include <map>
+#include "analytic/ApplicationModel.hpp"
 
 using namespace opencctv;
 
@@ -35,8 +36,8 @@ int main()
 		opencctv::util::log::Loggers::getDefaultLogger()->error("Failed to retrieve Analytic Starter port from Configuration file.");
 		return -1;
 	}
-	unsigned int iStartingPort = boost::lexical_cast<unsigned int>(sStartingPort);
-	std::map<unsigned int, analytic::AnalyticProcess> mAnalyticProcesses;
+	const unsigned int STARTING_PORT = boost::lexical_cast<unsigned int>(sStartingPort);
+	unsigned int iPort = STARTING_PORT;
 	opencctv::util::log::Loggers::getDefaultLogger()->info("Initializing values done.");
 
 	// Creating Analytic Server's request-reply MQ
@@ -102,16 +103,16 @@ int main()
 			if(iAnalyticInstanceId > 0 && !sAnalyticDirPath.empty() && !sAnalyticFilename.empty())
 			{
 				bool bAIStarted = false;
-				analytic::AnalyticProcess analyticProcess;
-				std::string sAnalyticInputQueueAddress = boost::lexical_cast<std::string>(++iStartingPort);
-				std::string sAnalyticOutputQueueAddress = boost::lexical_cast<std::string>(++iStartingPort);
+				analytic::AnalyticProcess* pAnalyticProcess = new analytic::AnalyticProcess();
+				std::string sAnalyticInputQueueAddress = boost::lexical_cast<std::string>(++iPort);
+				std::string sAnalyticOutputQueueAddress = boost::lexical_cast<std::string>(++iPort);
 				try
 				{
 					std::string sAnalyticRunnerPath;
 					sAnalyticRunnerPath.append(pConfig->get(analytic::util::PROPERTY_ANALYTIC_RUNNER_DIR));
 					sAnalyticRunnerPath.append("/");
 					sAnalyticRunnerPath.append(pConfig->get(analytic::util::PROPERTY_ANALYTIC_RUNNER_FILENAME));
-					bAIStarted = analyticProcess.start(sAnalyticRunnerPath, iAnalyticInstanceId, sAnalyticDirPath, sAnalyticFilename, sAnalyticInputQueueAddress, sAnalyticOutputQueueAddress);
+					bAIStarted = pAnalyticProcess->start(sAnalyticRunnerPath, iAnalyticInstanceId, sAnalyticDirPath, sAnalyticFilename, sAnalyticInputQueueAddress, sAnalyticOutputQueueAddress);
 				}
 				catch(opencctv::Exception &e)
 				{
@@ -122,6 +123,7 @@ int main()
 				}
 				if(bAIStarted)
 				{
+					analytic::ApplicationModel::getInstance()->getAnalyticProcesses()[iAnalyticInstanceId] = pAnalyticProcess;
 					std::stringstream ssMsg;
 					ssMsg << "Analytic Instance " << iAnalyticInstanceId << " started. ";
 					ssMsg << "Input queue at: " << sAnalyticInputQueueAddress << ", ";
@@ -163,6 +165,62 @@ int main()
 				std::string sErrMsg = "Request with invalid data.\nRequest: ";
 				sErrMsg.append(sRequest);
 				util::log::Loggers::getDefaultLogger()->error(sErrMsg);
+			}
+		}
+		// Kill all analytic processes message
+		else if(sOperation.compare(analytic::xml::OPERATION_KILL_ALL_ANALYTICS) == 0)
+		{
+			bool bDone = false;
+			std::map<unsigned int, analytic::AnalyticProcess*> mAnalyticProcesses = analytic::ApplicationModel::getInstance()->getAnalyticProcesses();
+			std::map<unsigned int, analytic::AnalyticProcess*>::iterator it;
+			for(it = mAnalyticProcesses.begin(); it != mAnalyticProcesses.end(); /*it increment below*/) {
+				analytic::AnalyticProcess* pAnalyticProcess = it->second;
+				if(pAnalyticProcess->stop())
+				{
+					if(pAnalyticProcess)
+					{
+						delete pAnalyticProcess;
+						pAnalyticProcess = NULL;
+					}
+					mAnalyticProcesses.erase(it++); //remove analytic process from the model
+				}
+				else
+				{
+					++it;
+				}
+			}
+			if(mAnalyticProcesses.empty())
+			{
+				bDone = true; // killed all analytics
+			}
+			// Sending Kill all analytic processes reply
+			try {
+				sReply = analytic::xml::AnalyticMessage::getKillAllAnalyticProcessesReply(bDone);
+			} catch (Exception &e) {
+				std::string sErrMsg = "Failed to create Kill All Analytics Reply. ";
+				sErrMsg.append(e.what());
+				util::log::Loggers::getDefaultLogger()->error(sErrMsg);
+			}
+			bool bASRSent = false;
+			try {
+				bASRSent = opencctv::mq::MqUtil::writeToSocket(pSocket, sReply);
+			} catch (std::runtime_error &e) {
+				std::string sErrMsg = "Failed to send Kill All Analytic Processes Reply. ";
+				sErrMsg.append(e.what());
+				util::log::Loggers::getDefaultLogger()->error(sErrMsg);
+			}
+			if (!bASRSent) {
+				util::log::Loggers::getDefaultLogger()->error("Failed to send Kill All Analytic Processes Reply.");
+			}
+			if(bDone)
+			{
+				iPort = STARTING_PORT; // reset port
+				util::log::Loggers::getDefaultLogger()->info("Killed all the Analytic processes.");
+			}
+			else
+			{
+				util::log::Loggers::getDefaultLogger()->error("Failed to kill all the Analytic processes.");
+				return -1; // exit
 			}
 		}
 		else

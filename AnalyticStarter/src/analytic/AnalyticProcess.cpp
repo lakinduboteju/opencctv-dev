@@ -49,7 +49,7 @@ bool AnalyticProcess::start(const std::string sPathToAnalyticRunnerExecutable, u
 bool AnalyticProcess::stop() {
 	bool bRet = false;
 	if (_pid > 0) {
-		if (kill(_pid, SIGKILL) == 0) {
+		if (kill(_pid, SIGTERM) == 0) {
 			if (_pReadStream) {
 				pclose(_pReadStream);
 				// delete _pReadStream;
@@ -58,6 +58,18 @@ bool AnalyticProcess::stop() {
 		}
 	}
 	return bRet;
+}
+
+bool AnalyticProcess::close()
+{
+	if(_pReadStream)
+	{
+		if(pclose(_pReadStream) == 0)
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 bool AnalyticProcess::readOutputStreamOfAnalyticProcess(

@@ -20,6 +20,7 @@ public:
 	AnalyticProcess();
 	bool start(const std::string sPathToAnalyticRunnerExecutable, unsigned int iAnalyticInstanceId, const std::string& sAnalyticPluginDirLocation, const std::string& sAnalyticPluginFilename, const std::string& sInputAnalyticQueueAddress, const std::string& sOutputAnalyticQueueAddress);
 	bool stop();
+	bool close();
 	bool readOutputStreamOfAnalyticProcess(std::string& sStreamOutput);
 	virtual ~AnalyticProcess();
 };
