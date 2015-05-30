@@ -10,6 +10,9 @@ $ sudo apt-get -y install build-essential g++ python-dev autotools-dev libicu-de
 
 #### 2. Download boost
 ```sh
+$ cd ~/Downloads/
+$ mkdir boost
+$ cd boost/
 $ wget http://sourceforge.net/projects/boost/files/boost/1.57.0/boost_1_57_0.tar.gz
 $ tar -xvzf boost_1_57_0.tar.gz
 $ cd boost_1_57_0
