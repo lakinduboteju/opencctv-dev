@@ -30,8 +30,8 @@ $ rbenv install --list
 ```
 Select latest version and install it.
 ``` sh
-$ rbenv install 2.1.2
-$ rbenv global 2.1.2
+$ rbenv install 2.2.2
+$ rbenv global 2.2.2
 ```
 Checking Ruby version
 ``` sh
