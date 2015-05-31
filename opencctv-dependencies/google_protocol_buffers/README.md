@@ -15,7 +15,7 @@ $ cd protobuf-2.6.1
 #### 2. Install protobuf
 ```sh
 $ ./configure --prefix=/usr/local
-$ make
+$ make -j4
 $ make check
 $ sudo make install
 $ sudo ldconfig

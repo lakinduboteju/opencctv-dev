@@ -13,9 +13,12 @@ $ sudo apt-get install cmake git libgtk2.0-dev pkg-config libavcodec-dev libavfo
 
 #### 2. Download opencv
 ```sh
+$ cd ~/Downloads/
+$ mkdir opencv
+$ cd opencv/
 $ wget http://sourceforge.net/projects/opencvlibrary/files/opencv-unix/2.4.9/opencv-2.4.9.zip
 $ unzip opencv-2.4.9.zip
-$ cd opencv
+$ cd opencv-2.4.9/
 ```
 
 #### 3. Init installation
