@@ -5,14 +5,17 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
 ../src/opencctv/util/SharedLibLoader.cpp \
+../src/opencctv/util/Unzipper.cpp \
 ../src/opencctv/util/Util.cpp 
 
 OBJS += \
 ./src/opencctv/util/SharedLibLoader.o \
+./src/opencctv/util/Unzipper.o \
 ./src/opencctv/util/Util.o 
 
 CPP_DEPS += \
 ./src/opencctv/util/SharedLibLoader.d \
+./src/opencctv/util/Unzipper.d \
 ./src/opencctv/util/Util.d 
 
 

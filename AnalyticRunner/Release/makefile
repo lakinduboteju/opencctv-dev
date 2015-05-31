@@ -54,7 +54,7 @@ all: AnalyticRunner
 AnalyticRunner: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C++ Linker'
-	g++ -L/usr/local/lib -pthread -o "AnalyticRunner" $(OBJS) $(USER_OBJS) $(LIBS)
+	g++ -L/usr/local/lib -o "AnalyticRunner" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
