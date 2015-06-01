@@ -11,7 +11,7 @@ ColorLogger::ColorLogger() {
 void ColorLogger::error(const std::string& sMessage)
 {
 	boost::mutex::scoped_lock lock(_mutex);
-	std::cout << "Error: " << "\033[31m" << sMessage << "\033[0m" << std::endl;
+	std::cout << "Error: " << sMessage << std::endl; // to the pipe
 	std::cerr << "Error: " << "\033[31m" << sMessage << "\033[0m" << std::endl;
 }
 
