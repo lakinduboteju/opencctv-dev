@@ -9,6 +9,7 @@ CPP_SRCS += \
 ../src/opencctv/Exception.cpp \
 ../src/opencctv/Image.cpp \
 ../src/opencctv/ImageMulticaster.cpp \
+../src/opencctv/Process.cpp \
 ../src/opencctv/ProducerThread.cpp \
 ../src/opencctv/ResultRouterThread.cpp 
 
@@ -18,6 +19,7 @@ OBJS += \
 ./src/opencctv/Exception.o \
 ./src/opencctv/Image.o \
 ./src/opencctv/ImageMulticaster.o \
+./src/opencctv/Process.o \
 ./src/opencctv/ProducerThread.o \
 ./src/opencctv/ResultRouterThread.o 
 
@@ -27,6 +29,7 @@ CPP_DEPS += \
 ./src/opencctv/Exception.d \
 ./src/opencctv/Image.d \
 ./src/opencctv/ImageMulticaster.d \
+./src/opencctv/Process.d \
 ./src/opencctv/ProducerThread.d \
 ./src/opencctv/ResultRouterThread.d 
 

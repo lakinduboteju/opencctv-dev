@@ -10,6 +10,7 @@ RM := rm -rf
 -include sources.mk
 -include src/opencctv/util/log/colored/subdir.mk
 -include src/opencctv/util/log/subdir.mk
+-include src/opencctv/util/subdir.mk
 -include src/opencctv/mq/subdir.mk
 -include src/opencctv/subdir.mk
 -include src/analytic/xml/subdir.mk

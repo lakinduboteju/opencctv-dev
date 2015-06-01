@@ -18,42 +18,18 @@
 #include <boost/lexical_cast.hpp> // to cast values
 #include <signal.h> // to handle terminate signal
 
-// Signal handler for SIGTERM (Terminate signal)
-void terminateHandler(int signum) {
-	std::map<unsigned int, analytic::AnalyticInstanceManager*> mAnalyticInstanceManagers = opencctv::ApplicationModel::getInstance()->getAnalyticInstanceManagers();
-	std::map<unsigned int, analytic::AnalyticInstanceManager*>::iterator it;
-	for(it = mAnalyticInstanceManagers.begin(); it != mAnalyticInstanceManagers.end(); /*it increment below*/) {
-		analytic::AnalyticInstanceManager* pAnalyticInstanceManager = it->second;
-		if(pAnalyticInstanceManager->killAllAnalyticInstances())
-		{
-			if(pAnalyticInstanceManager)
-			{
-				delete pAnalyticInstanceManager;
-				pAnalyticInstanceManager = NULL;
-			}
-			mAnalyticInstanceManagers.erase(it++); //remove analytic instance manager from the model
-		}
-		else
-		{
-			++it;
-		}
-	}
-	if(!mAnalyticInstanceManagers.empty())
-	{
-		opencctv::util::log::Loggers::getDefaultLogger()->error("Failed to reset all the Analytic Servers.");
-	}
-	else
-	{
-		opencctv::util::log::Loggers::getDefaultLogger()->info("Reset all the Analytic Servers.");
-	}
-	exit(signum);
-}
+void terminateHandler(int signum); // Terminate signal handler
 
 int main()
 {
+	// Sending PID of OpenCCTV Server process to OpenCCTV Starter process through stdout
+	fprintf(stdout, opencctv::util::Util::getPidMessage(getpid()).c_str());
+	fflush (stdout);
+
 	// Registering signal handlers
 	signal(SIGTERM, terminateHandler); // for Terminate signal
-	// signal(SIGINT, terminateHandler); // for Ctrl + C keyboard interrupt
+	signal(SIGINT, terminateHandler); // for Ctrl + C keyboard interrupt
+
 	// Initializing varibles
 	test::gateway::TestStreamGateway streamGateway;
 	test::gateway::TestAnalyticInstanceStreamGateway analyticInstanceGateway;
@@ -248,4 +224,35 @@ int main()
 	// _consumerThreadGroup.join_all();
 	// _producerThreadGroup.join_all();
 	return 0;
+}
+
+// Signal handler for SIGTERM (Terminate signal)
+void terminateHandler(int signum) {
+	std::map<unsigned int, analytic::AnalyticInstanceManager*> mAnalyticInstanceManagers = opencctv::ApplicationModel::getInstance()->getAnalyticInstanceManagers();
+	std::map<unsigned int, analytic::AnalyticInstanceManager*>::iterator it;
+	for(it = mAnalyticInstanceManagers.begin(); it != mAnalyticInstanceManagers.end(); /*it increment below*/) {
+		analytic::AnalyticInstanceManager* pAnalyticInstanceManager = it->second;
+		if(pAnalyticInstanceManager->killAllAnalyticInstances())
+		{
+			if(pAnalyticInstanceManager)
+			{
+				delete pAnalyticInstanceManager;
+				pAnalyticInstanceManager = NULL;
+			}
+			mAnalyticInstanceManagers.erase(it++); //remove analytic instance manager from the model
+		}
+		else
+		{
+			++it;
+		}
+	}
+	if(!mAnalyticInstanceManagers.empty())
+	{
+		opencctv::util::log::Loggers::getDefaultLogger()->error("Failed to reset all the Analytic Servers.");
+	}
+	else
+	{
+		opencctv::util::log::Loggers::getDefaultLogger()->info("Reset all the Analytic Servers.");
+	}
+	exit(signum);
 }

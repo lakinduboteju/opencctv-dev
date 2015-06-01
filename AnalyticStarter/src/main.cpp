@@ -112,7 +112,7 @@ int main()
 					sAnalyticRunnerPath.append(pConfig->get(analytic::util::PROPERTY_ANALYTIC_RUNNER_DIR));
 					sAnalyticRunnerPath.append("/");
 					sAnalyticRunnerPath.append(pConfig->get(analytic::util::PROPERTY_ANALYTIC_RUNNER_FILENAME));
-					bAIStarted = pAnalyticProcess->start(sAnalyticRunnerPath, iAnalyticInstanceId, sAnalyticDirPath, sAnalyticFilename, sAnalyticInputQueueAddress, sAnalyticOutputQueueAddress);
+					bAIStarted = pAnalyticProcess->startAnalytic(sAnalyticRunnerPath, iAnalyticInstanceId, sAnalyticDirPath, sAnalyticFilename, sAnalyticInputQueueAddress, sAnalyticOutputQueueAddress);
 				}
 				catch(opencctv::Exception &e)
 				{

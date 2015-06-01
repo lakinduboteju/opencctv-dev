@@ -87,5 +87,39 @@ bool Util::scanDir(const std::string& sDirPath, int& iFileCount, std::string& sL
 	}
 }
 
+std::string Util::getPidMessage(pid_t pid)
+{
+	boost::property_tree::ptree pt;
+	pt.put("pid", pid);
+	std::ostringstream oss;
+	try {
+		write_xml(oss, pt);
+	} catch (boost::property_tree::xml_parser::xml_parser_error &e) {
+		std::string sErrMsg = "Failed to generate PID message. ";
+		sErrMsg.append(e.what());
+		throw opencctv::Exception(sErrMsg);
+	}
+	std::string message = oss.str();
+	boost::replace_all(message, "\n", "");
+	message.append("\n");
+	return message;
+}
+
+pid_t Util::getPid(const std::string& sPidMessage)
+{
+	pid_t pid = 0;
+	boost::property_tree::ptree pt;
+	std::istringstream iss(sPidMessage);
+	try {
+		read_xml(iss, pt);
+		pid = pt.get<pid_t>("pid");
+	} catch (boost::property_tree::xml_parser::xml_parser_error &e) {
+		std::string sErrMsg = "Failed to parse PID message. ";
+		sErrMsg.append(e.what());
+		throw opencctv::Exception(sErrMsg);
+	}
+	return pid;
+}
+
 } /* namespace util */
 } /* namespace opencctv */

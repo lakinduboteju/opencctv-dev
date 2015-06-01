@@ -25,6 +25,7 @@ C_UPPER_DEPS :=
 SUBDIRS := \
 src/opencctv/util/log/colored \
 src/opencctv/util/log \
+src/opencctv/util \
 src/opencctv/mq \
 src/opencctv \
 src \

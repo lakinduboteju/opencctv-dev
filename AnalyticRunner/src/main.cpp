@@ -26,7 +26,7 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 	// Sending PID of Analytic process to Analytic Starter process through stdout
-	fprintf(stdout, analytic::xml::AnalyticMessage::getPidMessage(getpid()).c_str());
+	fprintf(stdout, opencctv::util::Util::getPidMessage(getpid()).c_str());
 	fflush (stdout);
 	// Saving input arguments
 	std::string sAnalyticInstanceId = argv[1];

@@ -13,9 +13,15 @@
 /* boost library links (/usr/local/lib/) -lboost_system */
 #include <boost/algorithm/string.hpp> // boost::algorithm::trim()
 
+// for xml generation and parsing
+#include <boost/property_tree/xml_parser.hpp>
+#include <boost/property_tree/ptree.hpp>
+
 #include "boost/filesystem/operations.hpp"
 #include "boost/filesystem/path.hpp"
 #include "boost/progress.hpp"
+#include <sys/types.h>
+#include "../Exception.hpp"
 
 namespace opencctv {
 namespace util {
@@ -29,6 +35,8 @@ public:
 	static unsigned long long getCurrentTimeMs();
 	static int getCurrentVmUsageKb();
 	static bool findSharedLibOfPlugin(const std::string& sPathToPluginDir, std::string& sPathToSharedLibOfPlugin);
+	static std::string getPidMessage(pid_t pid);
+	static pid_t getPid(const std::string& sPidMessage);
 };
 
 } /* namespace util */
