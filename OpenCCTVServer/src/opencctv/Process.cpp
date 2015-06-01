@@ -76,6 +76,11 @@ bool Process::close()
 	return false;
 }
 
+pid_t Process::getPid()
+{
+	return _pid;
+}
+
 bool Process::readLine(std::string& sStreamOutputLine) {
 	const int iSize = 2048;
 	char buf[iSize];

@@ -22,6 +22,7 @@ public:
 	bool start(const std::string& sPathToExecutable, const std::string& sCommandLineParams);
 	bool stop();
 	bool close();
+	pid_t getPid();
 	bool readLine(std::string& sStreamOutput);
 	virtual ~Process();
 };
