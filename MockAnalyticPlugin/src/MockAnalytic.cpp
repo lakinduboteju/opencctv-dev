@@ -37,12 +37,21 @@ void MockAnalytic::process(analytic::ConcurrentQueue<analytic::api::Image_t>* pI
 
 		/* 5. set output */
 		image.bGenerateAnalyticEvent = true;
-		image.sCustomTextResult = "Did a mock process.";
+		std::string sResultXml;
+		resultXml("Did a mock process.", sResultXml);
+		image.sCustomTextResult = sResultXml;
 		/* 6. push into output queue */
 		pOutputQueue->push(image);
 	}
 }
 
 MockAnalytic::~MockAnalytic() {
+}
+
+void MockAnalytic::resultXml(const std::string& sText, std::string& sToStoreXml)
+{
+	std::map<std::string, std::string> mTagValrPairs;
+	mTagValrPairs["mock"] = sText;
+	generateAnalyticResultXml(mTagValrPairs, sToStoreXml);
 }
 

@@ -4,6 +4,7 @@
 
 #include "../ConcurrentQueue.hpp"
 #include <string>
+#include <sstream>
 #include <opencv2/core/core.hpp>
 #include <map>
 
@@ -48,6 +49,20 @@ protected:
 		}
 		sXml.append("</inputstreams>");
 		return sXml;
+	}
+
+	void generateAnalyticResultXml(std::map<std::string, std::string>& mTagValuePair, std::string& sToStoreXml)
+	{
+		std::stringstream ssXml;
+		ssXml << "<result>";
+		std::map<std::string, std::string>::iterator it;
+		for (it = mTagValuePair.begin(); it != mTagValuePair.end(); ++it) {
+			ssXml << "<" << it->first << ">";
+			ssXml << it->second;
+			ssXml << "</" << it->first << ">";
+		}
+		ssXml << "</result>";
+		sToStoreXml = ssXml.str();
 	}
 };
 

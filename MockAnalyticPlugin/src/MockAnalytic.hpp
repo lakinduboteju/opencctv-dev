@@ -21,6 +21,7 @@ public:
 	MockAnalytic();
 	bool init(const std::string& sAnalyticPluginDirLocation);
 	void process(analytic::ConcurrentQueue<analytic::api::Image_t>* pInputQueue, analytic::ConcurrentQueue<analytic::api::Image_t>* pOutputQueue);
+	void resultXml(const std::string& sText, std::string& sToStoreXml);
 	virtual ~MockAnalytic();
 };
 
