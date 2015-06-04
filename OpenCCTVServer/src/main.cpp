@@ -17,6 +17,9 @@
 #include <boost/lockfree/queue.hpp>
 #include <boost/lexical_cast.hpp> // to cast values
 #include <signal.h> // to handle terminate signal
+#include "opencctv/db/StreamGateway.hpp"
+#include "opencctv/db/AnalyticInstanceStreamGateway.hpp"
+
 
 void terminateHandler(int signum); // Terminate signal handler
 
@@ -31,8 +34,12 @@ int main()
 	signal(SIGINT, terminateHandler); // for Ctrl + C keyboard interrupt
 
 	// Initializing varibles
-	test::gateway::TestStreamGateway streamGateway;
-	test::gateway::TestAnalyticInstanceStreamGateway analyticInstanceGateway;
+	//test::gateway::TestStreamGateway streamGateway;
+	opencctv::db::StreamGateway streamGateway;
+
+	//test::gateway::TestAnalyticInstanceStreamGateway analyticInstanceGateway;
+	opencctv::db::AnalyticInstanceStreamGateway analyticInstanceGateway;
+
 	opencctv::util::Config* pConfig = opencctv::util::Config::getInstance();
 	opencctv::ApplicationModel* pModel = opencctv::ApplicationModel::getInstance();
 	boost::thread_group _producerThreadGroup;
@@ -100,7 +107,7 @@ int main()
 					pModel->getResultsOutputQueueAddresses()[analyticInstance.getAnalyticInstanceId()] = sAnalyticQueueOutAddress;
 					// if Analytic Instance started, construct Flow Controller for Input Analytic queue and store it on Application Model.
 					opencctv::util::flow::FlowController* pFlowController = new opencctv::util::flow::SimpleFlowController(remoteQueueSize);
-//					opencctv::util::flow::FlowController* pFlowController = new opencctv::util::flow::BasicFlowController();
+					//opencctv::util::flow::FlowController* pFlowController = new opencctv::util::flow::BasicFlowController();
 					pModel->getFlowControllers()[analyticInstance.getAnalyticInstanceId()] = pFlowController;
 					std::stringstream ssMsg;
 					ssMsg << "Analytic Instance " << analyticInstance.getAnalyticInstanceId();
@@ -122,7 +129,12 @@ int main()
 					opencctv::util::log::Loggers::getDefaultLogger()->error(sErrMsg);
 				}
 			}
+			else
+			{
+				//Needed ???
+			}
 		}
+
 		opencctv::util::log::Loggers::getDefaultLogger()->info("Starting Analytic Instances done.");
 
 		// Creating threads and internal queues
