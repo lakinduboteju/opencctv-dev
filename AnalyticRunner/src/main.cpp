@@ -17,6 +17,9 @@
 #include "analytic/ProducerThread.hpp"
 #include "analytic/ConsumerThread.hpp"
 #include "opencctv/util/serialization/gpb/ProtoBuf.hpp"
+#include "analytic/util/Config.hpp"
+
+#include <iostream>
 
 int main(int argc, char* argv[])
 {
@@ -70,8 +73,17 @@ int main(int argc, char* argv[])
 	opencctv::PluginLoader<analytic::api::Analytic> analyticLoader;
 	analytic::api::Analytic* pAnalytic = NULL;
 	try {
-		std::string sAnalyticPluginPath = sAnalyticPluginDirLocation;
-		sAnalyticPluginPath.append("/").append(sAnalyticPluginFilename);
+		//std::string sAnalyticPluginPath = sAnalyticPluginDirLocation;
+		//sAnalyticPluginPath.append("/").append(sAnalyticPluginFilename);
+		sAnalyticPluginDirLocation = analytic::util::Config::getInstance()->get(analytic::util::PROPERTY_ANALYTIC_PLUGIN_DIR);
+		if(*sAnalyticPluginDirLocation.rbegin() != '/') // check last char
+		{
+			sAnalyticPluginDirLocation.append("/");
+		}
+		sAnalyticPluginDirLocation.append(sAnalyticPluginFilename);
+		std::string sAnalyticPluginPath;
+		opencctv::util::Util::findSharedLibOfPlugin(sAnalyticPluginDirLocation, sAnalyticPluginPath);
+		//std::cerr << "Analytic plugin path = " << sAnalyticPluginDirLocation << std::endl;
 		analyticLoader.loadPlugin(sAnalyticPluginPath);
 		pAnalytic = analyticLoader.createPluginInstance();
 	} catch (opencctv::Exception &e) {

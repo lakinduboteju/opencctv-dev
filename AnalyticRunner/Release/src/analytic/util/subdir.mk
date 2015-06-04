@@ -4,12 +4,15 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
+../src/analytic/util/Config.cpp \
 ../src/analytic/util/ImageUtil.cpp 
 
 OBJS += \
+./src/analytic/util/Config.o \
 ./src/analytic/util/ImageUtil.o 
 
 CPP_DEPS += \
+./src/analytic/util/Config.d \
 ./src/analytic/util/ImageUtil.d 
 
 
