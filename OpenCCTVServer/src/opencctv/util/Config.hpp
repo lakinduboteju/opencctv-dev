@@ -24,7 +24,6 @@ const std::string PROPERTY_INTERNAL_QUEUE_SIZE = "internal_queue_size";
 const std::string PROPERTY_REMOTE_QUEUE_SIZE = "remote_queue_size";
 
 const std::string PROPERTY_VMS_CONNECTOR_DIR = "vms_connector_directory";
-const std::string PROPERTY_ANALYTIC_PLUGIN_DIR = "analytic_plugin_directory";
 
 const std::string PROPERTY_DB_SERVER_NAME = "db_server_name";
 const std::string PROPERTY_DB_PORT = "db_port";

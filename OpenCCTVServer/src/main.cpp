@@ -120,18 +120,14 @@ int main()
 					ssErrMsg << " failed.";
 					opencctv::util::log::Loggers::getDefaultLogger()->error(ssErrMsg.str());
 				}
-				// Adding Input Image Queue destinations to Image Multicaster
-				try {
-					pMulticaster->addDestination(analyticInstance);
-				} catch (opencctv::Exception &e) {
-					std::string sErrMsg = "Failed to add destination to Image Multicaster. ";
-					sErrMsg.append(e.what());
-					opencctv::util::log::Loggers::getDefaultLogger()->error(sErrMsg);
-				}
 			}
-			else
-			{
-				//Needed ???
+			// Adding Input Image Queue destinations to Image Multicaster
+			try {
+				pMulticaster->addDestination(analyticInstance);
+			} catch (opencctv::Exception &e) {
+				std::string sErrMsg = "Failed to add destination to Image Multicaster. ";
+				sErrMsg.append(e.what());
+				opencctv::util::log::Loggers::getDefaultLogger()->error(sErrMsg);
 			}
 		}
 
@@ -156,9 +152,17 @@ int main()
 			else {
 				try {
 					pVmsPluginLoader = new opencctv::PluginLoader<opencctv::api::VmsConnector>();
-					std::string sVmsPluginPath = stream.getVmsConnectorDirLocation();
-					sVmsPluginPath.append("/");
-					sVmsPluginPath.append(stream.getVmsConnectorFilename());
+					//std::string sVmsPluginPath = stream.getVmsConnectorDirLocation();
+					//sVmsPluginPath.append("/");
+					//sVmsPluginPath.append(stream.getVmsConnectorFilename());
+					std::string sVmsPluginDirPath = pConfig->get(opencctv::util::PROPERTY_VMS_CONNECTOR_DIR);
+					if(*sVmsPluginDirPath.rbegin() != '/') // check last char
+					{
+						sVmsPluginDirPath.append("/");
+					}
+					sVmsPluginDirPath.append(stream.getVmsConnectorFilename());
+					std::string sVmsPluginPath;
+					opencctv::util::Util::findSharedLibOfPlugin(sVmsPluginDirPath, sVmsPluginPath);
 					pVmsPluginLoader->loadPlugin(sVmsPluginPath);
 					pModel->getVmsPluginLoaders()[stream.getVmsTypeId()] = pVmsPluginLoader;
 				} catch (opencctv::Exception &e) {

@@ -37,20 +37,18 @@ void AnalyticInstanceStreamGateway::findAllForStream(unsigned int iStreamId, std
 			ais.setAnalyticInstanceId((*pResultsPtr).getInt("analytic_instance_id"));
 			ais.setInputName((*pResultsPtr).getString("name"));
 
-			opencctv::util::Config* pConfig = opencctv::util::Config::getInstance();
-			std::string sAnalyticsBasePath = pConfig->get(opencctv::util::PROPERTY_ANALYTIC_PLUGIN_DIR);
-			std::string sAnalyticsDir = (*pResultsPtr).getString("filename");
-			std::string sAnalyticsDirLocation;
-			sAnalyticsDirLocation.append(sAnalyticsBasePath);
-			sAnalyticsDirLocation.append("/");
-			sAnalyticsDirLocation.append(sAnalyticsDir);
-			ais.setAnalyticDirLocation(sAnalyticsDirLocation);
+			//opencctv::util::Config* pConfig = opencctv::util::Config::getInstance();
+			//std::string sAnalyticsBasePath = pConfig->get(opencctv::util::PROPERTY_ANALYTIC_PLUGIN_DIR);
+			//std::string sAnalyticsDir = (*pResultsPtr).getString("filename");
+			//std::string sAnalyticsDirLocation;
+			//sAnalyticsDirLocation.append(sAnalyticsBasePath);
+			//sAnalyticsDirLocation.append("/");
+			//sAnalyticsDirLocation.append(sAnalyticsDir);
+			//ais.setAnalyticDirLocation(sAnalyticsDirLocation);
 
-			opencctv::util::Util util;
-			std::string sAnalyticFilename = "";
-			//TODO :: If sAnalyticFilename is not found in the connector plugin zip file what to do?
-			util.findSharedLibOfPlugin(sAnalyticsDirLocation,sAnalyticFilename);
-			ais.setAnalyticFilename(sAnalyticFilename);
+			ais.setAnalyticFilename((*pResultsPtr).getString("filename"));
+			ais.setAnalyticDirLocation((*pResultsPtr).getString("filename"));
+
 			vToStoreAIS.push_back(ais);
 			//ainsts.id, ainsts.analytic_instance_id, ainsts.analytic_input_stream_id, ainps.name, a.filename
 		}

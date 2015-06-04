@@ -44,20 +44,17 @@ void StreamGateway::findAll(std::vector<opencctv::dto::Stream>& vToStoreStreams)
 			stream.setVmsUsername((*pResultsPtr).getString("username"));
 			stream.setVmsPassword((*pResultsPtr).getString("password"));
 
-			opencctv::util::Config* pConfig = opencctv::util::Config::getInstance();
-			std::string sVmsConBasePath = pConfig->get(opencctv::util::PROPERTY_VMS_CONNECTOR_DIR);
-			std::string sVmsConnectorDir = (*pResultsPtr).getString("filename");
-			std::string sVmsConnectorDirLocation;
-			sVmsConnectorDirLocation.append(sVmsConBasePath);
-			sVmsConnectorDirLocation.append("/");
-			sVmsConnectorDirLocation.append(sVmsConnectorDir);
-			stream.setVmsConnectorDirLocation(sVmsConnectorDirLocation);
+			//opencctv::util::Config* pConfig = opencctv::util::Config::getInstance();
+			//std::string sVmsConBasePath = pConfig->get(opencctv::util::PROPERTY_VMS_CONNECTOR_DIR);
+			//std::string sVmsConnectorDir = (*pResultsPtr).getString("filename");
+			//std::string sVmsConnectorDirLocation;
+			//sVmsConnectorDirLocation.append(sVmsConBasePath);
+			//sVmsConnectorDirLocation.append("/");
+			//sVmsConnectorDirLocation.append(sVmsConnectorDir);
+			//stream.setVmsConnectorDirLocation(sVmsConnectorDirLocation);
 
-			opencctv::util::Util util;
-			std::string sVmsConnectorFilename = "";
-			//TODO :: If sVmsConnectorFilename is not found in the connector plugin zip file what to do?
-			util.findSharedLibOfPlugin(sVmsConnectorDirLocation,sVmsConnectorFilename);
-			stream.setVmsConnectorFilename(sVmsConnectorFilename);
+			stream.setVmsConnectorFilename((*pResultsPtr).getString("filename"));
+			stream.setVmsConnectorDirLocation((*pResultsPtr).getString("filename"));
 
 			vToStoreStreams.push_back(stream);
 		}
