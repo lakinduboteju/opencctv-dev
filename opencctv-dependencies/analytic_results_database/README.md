@@ -6,7 +6,7 @@
 ```sh
 $ mysql -u username -p
 Enter password: <Enter MySQL password>
-mysql> source \path_to_sql_script\opencctv_results_db.sql;
+mysql> source /path_to_sql_script/opencctv_results_db.sql;
 ```
 
 Example
@@ -17,4 +17,5 @@ mysql> source ~/Downloads/OpenCCTV/opencctv-dependencies/analytic_results_databa
 ```
 
 Analytic results table:-
+
 ![analytic results table diagram comes here.](opencctv_results_table.JPG "Analytic Runner design")
