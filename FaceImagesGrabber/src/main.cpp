@@ -144,7 +144,7 @@ int main(int argc, char* argv[])
 		if(iId > 0 && !sCameraId.empty() && !sDstDirPath.empty())
 		{
 			// Get Result from Results DB
-			db::AnalyticResultGateway gateway;
+			opencctv::db::AnalyticResultGateway gateway;
 			AnalyticResult result;
 			unsigned int iAnalyticInstanceId;
 			gateway.getResult(iId, result, iAnalyticInstanceId);
