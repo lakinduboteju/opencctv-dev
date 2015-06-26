@@ -13,6 +13,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <string>
 
 #include "Config.hpp"
 
@@ -28,6 +29,7 @@ private:
 	int _iMinNeighbors;
 	cv::Size _minSize;
 	cv::Size _maxSize;
+	string _sImageSaveDirPath;
 public:
 	FaceDetectAnalytic();
 	bool init(const std::string& sAnalyticPluginDirLocation);

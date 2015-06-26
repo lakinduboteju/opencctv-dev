@@ -50,6 +50,9 @@ bool FaceDetectAnalytic::init(const std::string& sAnalyticPluginDirLocation)
 	sConfigFilePath.append("analytic.config");
 	Config* pConfig = Config::getInstance(sConfigFilePath);
 
+	_sImageSaveDirPath = sDir;
+	_sImageSaveDirPath.append("images/");
+
 	std::string sHaarCascadeFilePath = sDir;
 	sHaarCascadeFilePath.append(pConfig->get(PROPERTY_CASCADE_FILE));
 
@@ -111,16 +114,19 @@ void FaceDetectAnalytic::process(analytic::ConcurrentQueue<analytic::api::Image_
 			cv::waitKey(1);
 		}
 
-		// freeing generated Mats
-		matGray.release();
-		matToBeProcessed.release();
-
 		/* 5. set output */
 		if(vFaces.size() > 0)
 		{
+			std::stringstream ss;
+			ss << _sImageSaveDirPath << image.sTimestamp << ".jpg";
+			cv::imwrite(ss.str(), matToBeProcessed);
+
 			image.bGenerateAnalyticEvent = true;
 			resultXml(vFaces, image.sCustomTextResult);
 		}
+		// freeing generated Mats
+		matGray.release();
+		matToBeProcessed.release();
 		/* 6. push into output queue */
 		pOutputQueue->push(image);
 	}
